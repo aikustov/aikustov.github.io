@@ -1,0 +1,32 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# JetBrains settings folder
+.idea/
+
+# --- Working notes: not for the public repository ---
+# This repository is public (required for free GitHub Pages), and these files
+# hold personal contact details and drafts that should stay local. The whole
+# directory is ignored rather than a list of filenames: listing names proved
+# brittle, since new files kept falling outside the list.
+for_planning/
+.claude/

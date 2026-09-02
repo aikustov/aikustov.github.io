@@ -1,0 +1,53 @@
+---
+import { localePath, type Locale } from '../config';
+import { identity } from '../content/cv';
+
+interface Props {
+  locale: Locale;
+  switchTo: string;
+}
+const { locale, switchTo } = Astro.props;
+const other: Locale = locale === 'ru' ? 'en' : 'ru';
+
+/* Empty profiles are not rendered: a link to nowhere is worse than no link. */
+const links = [
+  { label: 'GitHub', href: identity.profiles.github },
+  { label: 'LinkedIn', href: identity.profiles.linkedin },
+  { label: 'Habr', href: identity.profiles.habr },
+].filter((l) => l.href);
+---
+
+<nav class="bar">
+  <div class="wrap inner">
+    {links.map((l) => <a href={l.href} rel="me noopener" target="_blank">{l.label}</a>)}
+    <a class="lang" href={localePath(other)} hreflang={other} lang={other}>{switchTo}</a>
+  </div>
+</nav>
+
+<style>
+  .bar {
+    padding-top: clamp(1rem, 0.6rem + 1.4vw, 1.75rem);
+  }
+
+  .inner {
+    display: flex;
+    justify-content: flex-end;
+    gap: clamp(0.9rem, 2vw, 1.5rem);
+    font-size: var(--t-sm);
+  }
+
+  a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+
+  a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .lang {
+    color: var(--ink-faint);
+  }
+</style>

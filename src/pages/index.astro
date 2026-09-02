@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import TopBar from '../components/TopBar.astro';
+import Hero from '../components/Hero.astro';
+import Timeline from '../components/Timeline.astro';
+import Stack from '../components/Stack.astro';
+import About from '../components/About.astro';
+import Footer from '../components/Footer.astro';
+import { cv } from '../content/cv';
+import { ui } from '../content/ui';
+
+const locale = 'ru' as const;
+const data = cv[locale];
+const t = ui[locale];
+---
+
+<Base
+  locale={locale}
+  title={t.metaTitle}
+  description={t.metaDescription}
+  skipLabel={t.skip}
+>
+  <TopBar slot="topbar" locale={locale} switchTo={t.switchTo} />
+  <Hero
+    name={data.name}
+    role={data.role}
+    lead={data.lead}
+    highlights={data.highlights}
+    sub={data.sub}
+    alt={t.portraitAlt}
+  />
+  <Timeline jobs={data.jobs} intro={data.intro} label={t.timeline} />
+  <About paragraphs={data.about} label={t.about} />
+  <Stack groups={data.stack} label={t.skills} />
+  <Footer data={data} t={t} />
+</Base>

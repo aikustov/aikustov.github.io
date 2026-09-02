@@ -1,0 +1,72 @@
+---
+import type { StackGroup } from '../content/cv';
+
+interface Props {
+  groups: StackGroup[];
+  label: string;
+}
+const { groups, label } = Astro.props;
+---
+
+<section class="section" aria-label={label}>
+  <div class="wrap">
+    <div class="grid reveal">
+      <p class="eyebrow col-full">{label}</p>
+
+      <div class="groups col-full">
+        {
+          groups.map((g) => (
+            <div class="group">
+              <h2 class="gname">{g.label}</h2>
+              <ul class="items">
+                {g.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The block exists for two readers at once. A recruiter scanning for a stack
+     finds one in a predictable place instead of mining it out of prose; and
+     Schema.org knowsAbout is built from this same list, so nothing is claimed
+     to a machine that a human cannot see on the page. */
+  .groups {
+    display: grid;
+    gap: clamp(2rem, 1.5rem + 2vw, 3rem);
+  }
+
+  @media (min-width: 56rem) {
+    .groups {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: var(--col-gap);
+    }
+  }
+
+  .gname {
+    font-family: var(--serif);
+    font-size: var(--t-base);
+    font-weight: 500;
+    padding-bottom: 0.7em;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* A list rather than one run-on line: the items keep their own boundaries
+     for a screen reader and for a parser, and the eye picks a term out of a
+     column faster than out of a paragraph. */
+  .items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35em;
+    margin-top: 0.9em;
+    font-size: var(--t-sm);
+    color: var(--ink-soft);
+  }
+</style>

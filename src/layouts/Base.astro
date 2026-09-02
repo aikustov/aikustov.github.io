@@ -1,0 +1,98 @@
+---
+import '../styles/global.css';
+import PersonSchema from '../components/PersonSchema.astro';
+import Metrika from '../components/Metrika.astro';
+import {
+  SITE_URL,
+  INDEXABLE,
+  LOCALES,
+  HREFLANG,
+  OG_IMAGE,
+  localePath,
+  type Locale,
+} from '../config';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  skipLabel: string;
+}
+
+const { locale, title, description, skipLabel } = Astro.props;
+const canonical = new URL(localePath(locale), SITE_URL).href;
+const ogLocale = locale === 'ru' ? 'ru_RU' : 'en_US';
+const ogAlternate = locale === 'ru' ? 'en_US' : 'ru_RU';
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    {/* SVG for anything modern, .ico because Yandex still fetches it and shows
+        it next to the result, apple-touch-icon because iOS ignores both. */}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <link rel="canonical" href={canonical} />
+
+    {/* hreflang: both versions are equal and get indexed independently.
+        There is no IP-based redirect and there will not be one — Googlebot
+        crawls from US addresses, and such a redirect would hide the Russian
+        version from it. */}
+    {
+      LOCALES.map((l) => (
+        <link
+          rel="alternate"
+          hreflang={HREFLANG[l]}
+          href={new URL(localePath(l), SITE_URL).href}
+        />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={new URL(localePath('ru'), SITE_URL).href} />
+
+    {/* Open Graph — the preview shown when the link is sent to a messenger
+        or a social network. */}
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content="aikustov.com" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={ogAlternate} />
+    {
+      OG_IMAGE && (
+        <Fragment>
+          <meta property="og:image" content={new URL(OG_IMAGE, SITE_URL).href} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta name="twitter:card" content="summary_large_image" />
+        </Fragment>
+      )
+    }
+    {!OG_IMAGE && <meta name="twitter:card" content="summary" />}
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    {/* A draft must not reach the index. Lifted by the INDEXABLE switch
+        in src/config.ts — the same switch drives robots.txt. */}
+    {!INDEXABLE && <meta name="robots" content="noindex, nofollow" />}
+
+    <PersonSchema locale={locale} />
+    <Metrika />
+
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <a class="skip" href="#main">{skipLabel}</a>
+    <slot name="topbar" />
+    <main id="main">
+      <slot />
+    </main>
+  </body>
+</html>

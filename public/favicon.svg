@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="K">
+  <!-- Paper ground rather than a transparent one: a teal letter on its own
+       disappears into a dark browser theme. The pair is the site's own —
+       #faf8f5 paper, #216869 accent.
+
+       Drawn with strokes rather than set as text: a favicon cannot rely on a
+       webfont, and at 16px a serif K turns to mush anyway. Stroke width stays
+       at 9 of 64 — thinner reads as grey fuzz in the tab strip. -->
+  <rect width="64" height="64" rx="12" fill="#faf8f5"/>
+  <g stroke="#216869" stroke-width="9" fill="none">
+    <path d="M21 14 V50"/>
+    <path d="M24.5 34.5 L44 14"/>
+    <path d="M24.5 30.5 L46 50"/>
+  </g>
+</svg>

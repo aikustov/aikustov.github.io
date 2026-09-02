@@ -1,0 +1,98 @@
+---
+import { identity, type CV } from '../content/cv';
+import type { UI } from '../content/ui';
+
+interface Props {
+  data: CV;
+  t: UI;
+}
+const { data, t } = Astro.props;
+
+const links = [
+  { label: 'GitHub', href: identity.profiles.github },
+  { label: 'LinkedIn', href: identity.profiles.linkedin },
+  { label: 'Habr', href: identity.profiles.habr },
+].filter((l) => l.href);
+---
+
+<footer class="section">
+  <div class="wrap">
+    <div class="grid reveal">
+      <div class="col-main">
+        <p class="eyebrow">{t.education}</p>
+        <p class="item">
+          {data.education.org}<br />
+          <span class="soft">{data.education.faculty}, {data.education.year}</span>
+        </p>
+
+        <p class="eyebrow spaced">{t.languages}</p>
+        <p class="item soft">{data.languages.join(' · ')}</p>
+
+        {
+          data.availability && (
+            <>
+              <p class="eyebrow spaced">{t.availability}</p>
+              <p class="item soft">{data.availability}</p>
+            </>
+          )
+        }
+      </div>
+
+      <div class="col-side">
+        <p class="eyebrow">{t.contacts}</p>
+        <p class="item">
+          <span class="channel">Telegram</span>
+          <a class="tg" href={identity.telegram.url} rel="me noopener" target="_blank">
+            {identity.telegram.handle}
+          </a>
+        </p>
+        <p class="links">
+          {links.map((l) => <a href={l.href} rel="me noopener" target="_blank">{l.label}</a>)}
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .item {
+    margin-top: 0.9em;
+    max-width: 40ch;
+    font-size: var(--t-sm);
+    text-wrap: pretty;
+  }
+
+  .soft {
+    color: var(--ink-soft);
+  }
+
+  .spaced {
+    margin-top: 2.4em;
+  }
+
+  /* The handle alone does not say which messenger it belongs to. The channel
+     is named outside the link so the underline stays on the address. */
+  .channel {
+    color: var(--ink-faint);
+    margin-right: 0.5em;
+  }
+
+  .tg {
+    font-size: var(--t-base);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .tg:hover {
+    border-color: var(--accent);
+  }
+
+  .links {
+    margin-top: 1.5em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: var(--t-sm);
+    color: var(--ink-soft);
+  }
+</style>

@@ -1,0 +1,56 @@
+---
+interface Props {
+  paragraphs: string[];
+  label: string;
+}
+const { paragraphs, label } = Astro.props;
+---
+
+<section class="section" aria-label={label}>
+  <div class="wrap">
+    <div class="grid body reveal">
+      <p class="eyebrow col-full">{label}</p>
+      <div class="main col-main">
+        {paragraphs.slice(0, -1).map((p) => <p>{p}</p>)}
+      </div>
+      <div class="aside col-side">
+        <p>{paragraphs[paragraphs.length - 1]}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .main {
+    display: grid;
+    gap: 1.1em;
+    /* Width comes from the grid column. The character limit is only needed
+       below 56rem, where there is no grid and the text would otherwise
+       stretch across the full width. */
+    max-width: var(--measure);
+  }
+
+  @media (min-width: 56rem) {
+    .main {
+      max-width: none;
+    }
+  }
+
+  .main p {
+    font-size: var(--t-md);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  /* The right column holds the candid weak spot. Set off by a rule and in
+     the serif face so it reads as a separate thought rather than a
+     continuation of the list of strengths. */
+  .aside p {
+    padding-left: clamp(1rem, 2.5vw, 1.75rem);
+    border-left: 2px solid var(--accent);
+    font-family: var(--serif);
+    font-size: var(--t-base);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+</style>

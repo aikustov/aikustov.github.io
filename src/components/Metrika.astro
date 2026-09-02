@@ -1,0 +1,45 @@
+---
+import { YANDEX_METRIKA_ID } from '../config';
+---
+
+{
+  YANDEX_METRIKA_ID && (
+    <Fragment>
+      {/* The official Yandex.Metrica snippet, kept close to the version the
+          dashboard hands out — the loader is theirs and is not worth
+          improvising on. Two deliberate differences from the copy-paste:
+          the id is interpolated from config instead of being inlined twice,
+          and `ecommerce: "dataLayer"` is dropped — there is no shop here and
+          nothing ever writes to that layer.
+
+          webvisor is on: on a page like this the only question worth asking
+          of analytics is whether a reader reaches the numbers or leaves on
+          the lead, and session recordings are what answers it.
+
+          The id is interpolated rather than passed through `define:vars`.
+          Combining `define:vars` with `set:html` silently drops the body:
+          Astro emits the generated `const id = "…"` preamble and nothing
+          else, so the counter never loads and nothing reports an error. */}
+      <script
+        is:inline
+        set:html={`
+(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for(var j=0;j<e.scripts.length;j++){if(e.scripts[j].src===r){return}}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,
+a.parentNode.insertBefore(k,a)})
+(window,document,"script","https://mc.yandex.ru/metrika/tag.js?id=${YANDEX_METRIKA_ID}","ym");
+ym(${YANDEX_METRIKA_ID},"init",{ssr:true,webvisor:true,clickmap:true,accurateTrackBounce:true,trackLinks:true});`}
+      />
+      <noscript>
+        <div>
+          <img
+            src={`https://mc.yandex.ru/watch/${YANDEX_METRIKA_ID}`}
+            style="position:absolute;left:-9999px"
+            alt=""
+          />
+        </div>
+      </noscript>
+    </Fragment>
+  )
+}

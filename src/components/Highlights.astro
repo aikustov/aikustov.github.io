@@ -1,0 +1,77 @@
+---
+import type { Metric } from '../content/cv';
+
+interface Props {
+  items: Metric[];
+}
+const { items } = Astro.props;
+---
+
+<ul class="strip">
+  {
+    items.map((m) => (
+      <li>
+        <p class="value">{m.value}</p>
+        <p class="label">{m.label}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  /* The trailer for the timeline: three numbers directly under the lead, so
+     the first screen carries proof and not only a voice. Measured on a phone,
+     without this block the first number sat 2.6 screens down — past the point
+     where a reader skimming for thirty seconds stops.
+
+     Three columns even on a narrow screen. Stacked, the block would push the
+     positioning paragraph off the first screen, and the whole point of it is
+     to be seen without scrolling. */
+  .strip {
+    list-style: none;
+    margin: clamp(1.8rem, 1.4rem + 1.4vw, 2.6rem) 0 0;
+    padding: clamp(1.2rem, 1rem + 0.8vw, 1.6rem) 0 0;
+    border-top: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.9rem, 2vw, 1.75rem);
+  }
+
+  .strip li {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .value {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.35rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    font-variant-numeric: lining-nums;
+    /* Two of the three values wrap onto a second line in a phone-width column
+       and one does not. The box is held at two lines and the value sits at the
+       bottom of it, so all three labels start on the same line and the ragged
+       wrap reads as alignment rather than as an accident. */
+    display: flex;
+    align-items: flex-end;
+    min-height: 2em;
+    text-wrap: balance;
+  }
+
+  .label {
+    margin-top: 0.55em;
+    font-size: var(--t-xs);
+    line-height: 1.4;
+    color: var(--ink-faint);
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 56rem) {
+    .label {
+      font-size: var(--t-sm);
+      max-width: 26ch;
+    }
+  }
+</style>

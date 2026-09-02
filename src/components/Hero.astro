@@ -1,0 +1,134 @@
+---
+import { Image } from 'astro:assets';
+import { portrait } from '../content/media';
+import Highlights from './Highlights.astro';
+import type { Metric } from '../content/cv';
+
+interface Props {
+  name: string;
+  role: string;
+  lead: string;
+  highlights: Metric[];
+  sub: string;
+  alt: string;
+}
+const { name, role, lead, highlights, sub, alt } = Astro.props;
+---
+
+<header class="hero">
+  <div class="wrap grid">
+    <div class="col-main">
+      <p class="eyebrow eyebrow--accent">{role}</p>
+      <h1>{name}</h1>
+      <p class="lead">{lead}</p>
+      <Highlights items={highlights} />
+      <p class="sub">{sub}</p>
+    </div>
+    <figure class="portrait col-side">
+      {/* The desktop slot is ~340×1017 CSS px — on a 2× screen that is
+          680×2034 real pixels, and `cover` crops the frame down to the middle
+          third of its width before any of that. The upper widths are what
+          keeps the face sharp; Astro skips the variants the source file is
+          too small for, so a 720px original still only yields three. */}
+      <Image
+        src={portrait}
+        alt={alt}
+        widths={[320, 480, 720, 1080, 1440]}
+        sizes="(min-width: 56rem) 30vw, 16rem"
+        format="webp"
+        quality={82}
+        loading="eager"
+      />
+    </figure>
+  </div>
+</header>
+
+<style>
+  .hero {
+    padding-block: clamp(2rem, 1.2rem + 3vw, 4rem) var(--section);
+  }
+
+  /* Name, role and lead stay in the main column, the portrait in the side
+     one, and both start at the top. The name wraps onto two lines: that
+     lifts the portrait to the level of the heading and leaves no empty
+     field under the lead. */
+
+  h1 {
+    font-family: var(--serif);
+    font-size: var(--t-huge);
+    font-weight: 500;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    margin-block: 0.28em 0.5em;
+    /* The name is both the main search query and the cover of the page.
+       Wrap by words so a long surname does not break apart. */
+    text-wrap: balance;
+  }
+
+  /* The portrait lives in the side grid column — the one left empty in the
+     header. On a narrow screen there are no columns and it drops below the
+     lead: name and positioning first, face second. */
+  .portrait {
+    margin: 0;
+  }
+
+  .portrait :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center 22%;
+    background: var(--rule);
+  }
+
+  /* On the grid the portrait stretches to the full height of the text block
+     beside it, so the bottom of the photo lines up with the bottom of the lead.
+
+     The image is taken out of flow with absolute positioning: otherwise its
+     own height starts driving the height of the grid row, and instead of
+     alignment you get the opposite — the photo hangs below the text. */
+  @media (min-width: 56rem) {
+    .portrait {
+      align-self: stretch;
+      position: relative;
+      min-height: 18rem;
+    }
+
+    .portrait :global(img) {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+      width: 100%;
+      height: 100%;
+      object-position: center 20%;
+    }
+  }
+
+  @media (max-width: 55.999rem) {
+    .portrait {
+      max-width: 16rem;
+      margin-top: 2rem;
+    }
+  }
+
+  .lead {
+    font-size: var(--t-md);
+    line-height: 1.5;
+    max-width: var(--measure);
+    /* On a wide screen the measure comes from the grid column rather than
+       the character count: the right edge of the lead lines up with the
+       right edge of the timeline summaries. */
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+
+  /* Positioning, spelled out: one step quieter than the lead — through size
+     rather than colour, to avoid multiplying shades. */
+  .sub {
+    margin-top: clamp(1.8rem, 1.4rem + 1.4vw, 2.6rem);
+    font-size: var(--t-base);
+    line-height: 1.6;
+    max-width: var(--measure);
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+</style>

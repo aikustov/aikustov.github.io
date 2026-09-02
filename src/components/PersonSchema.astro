@@ -1,0 +1,57 @@
+---
+import { SITE_URL, localePath, type Locale } from '../config';
+import { portrait } from '../content/media';
+import { cv, identity } from '../content/cv';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const data = cv[locale];
+const current = data.jobs[0];
+
+/* sameAs is how search engines merge the site and the profiles into a single
+   entity. Empty values are dropped: a link to nowhere hurts rather than helps. */
+const sameAs = [...Object.values(identity.profiles), identity.telegram.url].filter(Boolean);
+
+/* The birth date is deliberately not published, for the same reason the city
+   is left out: age works as a filter during screening. */
+const person = {
+  '@type': 'Person',
+  '@id': `${SITE_URL}/#person`,
+  name: data.name,
+  alternateName: identity.alternateNames.filter((n) => n !== data.name),
+  url: new URL(localePath(locale), SITE_URL).href,
+  description: `${data.lead} ${data.sub}`,
+  jobTitle: data.role.split('·')[0].trim(),
+  worksFor: current
+    ? { '@type': 'Organization', name: current.orgName ?? current.company }
+    : undefined,
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: data.education.org,
+  },
+  /* Built from the skills block rather than from a separate list: whatever is
+     claimed to a machine is then visible to a human on the same page. */
+  knowsAbout: data.stack.flatMap((g) => g.items),
+  knowsLanguage: locale === 'ru' ? ['ru', 'en'] : ['Russian', 'English'],
+  image: new URL(portrait.src, SITE_URL).href,
+  ...(sameAs.length ? { sameAs } : {}),
+};
+
+/* ProfilePage is the type Google uses for pages that profile a person.
+   Person is nested inside it as the main entity. */
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  '@id': new URL(localePath(locale), SITE_URL).href,
+  inLanguage: locale,
+  name: data.name,
+  mainEntity: person,
+};
+---
+
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify(schema, null, 0)}
+/>

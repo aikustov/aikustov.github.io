@@ -1,0 +1,209 @@
+---
+import type { Job } from '../content/cv';
+
+interface Props {
+  jobs: Job[];
+  intro: string;
+  label: string;
+}
+const { jobs, intro, label } = Astro.props;
+---
+
+<section class="section" aria-label={label}>
+  <div class="wrap">
+    <div class="grid head">
+      <p class="eyebrow">{label}</p>
+      <p class="intro">{intro}</p>
+    </div>
+
+    <ol class="line">
+      {
+        jobs.map((job, i) => (
+          <li class:list={['node', 'grid', 'reveal', { accent: job.accent, now: i === 0 }]}>
+            <div class="col-main">
+              <p class="period">{job.period}</p>
+              <h2>{job.company}</h2>
+              <p class="role">{job.role}</p>
+              <p class="summary">{job.summary}</p>
+            </div>
+            <div class="metrics col-side">
+              {job.metrics.map((m) => (
+                <div class="metric">
+                  <p class="value">{m.value}</p>
+                  <p class="mlabel">{m.label}</p>
+                </div>
+              ))}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .head {
+    margin-bottom: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  }
+
+  .intro {
+    font-size: var(--t-md);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+    /* Below 56rem there are no columns, and without a limit the line would
+       stretch across the full width of the window. */
+    max-width: var(--measure);
+  }
+
+  /* Grid placement is declared here rather than through a class in the
+     markup: the markup stays semantic, and everything about appearance
+     lives in the component styles. */
+  @media (min-width: 56rem) {
+    .eyebrow {
+      grid-column: 1 / -1;
+    }
+
+    .intro {
+      grid-column: 1 / -1;
+      max-width: none;
+    }
+  }
+
+  .line {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 var(--rail);
+    border-left: 1px solid var(--rule);
+    display: grid;
+    gap: clamp(2.75rem, 1.5rem + 4vw, 4.5rem);
+  }
+
+  /* On a wide screen the rule moves out into the page margin and the node
+     content sits on the shared left edge, so the right column of numbers
+     lines up vertically with the right columns of the other sections.
+     On a narrow screen the rule stays inside: there is nowhere to put it
+     in a margin barely two centimetres wide. */
+  @media (min-width: 56rem) {
+    .line {
+      position: relative;
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .line::before {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      left: calc(-1 * var(--rail));
+      width: 1px;
+      background: var(--rule);
+    }
+  }
+
+  .node {
+    position: relative;
+  }
+
+  /* The dot on the rule. The product years get the deep accent, the
+     engineering ones a lighter, softer tone: the turn in the career shows
+     through the weight of the colour and needs no words. Both dots are
+     purely decorative, so the light green is acceptable here. */
+  .node::before {
+    content: '';
+    position: absolute;
+    top: 0.45em;
+    left: calc(-1 * var(--rail) - 5px);
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+  }
+
+  .node.accent::before {
+    background: var(--accent);
+  }
+
+  .node.now::before {
+    top: 0.35em;
+    left: calc(-1 * var(--rail) - 7px);
+    width: 13px;
+    height: 13px;
+    box-shadow: 0 0 0 3px var(--paper);
+  }
+
+  .period {
+    font-size: var(--t-sm);
+    color: var(--ink-faint);
+    font-variant-numeric: lining-nums;
+  }
+
+  h2 {
+    margin-top: 0.2em;
+    font-family: var(--serif);
+    font-size: var(--t-lg);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .role {
+    margin-top: 0.15em;
+    font-size: var(--t-sm);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+
+  .summary {
+    margin-top: 1em;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+
+  .metrics {
+    display: grid;
+    gap: clamp(1.1rem, 0.6rem + 1.6vw, 1.9rem);
+    grid-template-columns: 1fr;
+  }
+
+  /* On medium screens the numbers still sit under the text, so they go into
+     two columns to keep the page from stretching. On wide screens they move
+     into the right column and stack. */
+  @media (min-width: 34rem) and (max-width: 55.999rem) {
+    .metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 56rem) {
+    .metrics {
+      padding-top: 1.6em;
+    }
+  }
+
+  .value {
+    font-family: var(--serif);
+    font-size: clamp(1.9rem, 1.3rem + 2.2vw, 2.9rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    font-variant-numeric: lining-nums;
+  }
+
+  /* Neutral numbers for the engineering years: the accent is saved for the
+     product part, otherwise it stops working as an accent. */
+  .node:not(.accent) .value {
+    color: var(--ink);
+  }
+
+  .mlabel {
+    margin-top: 0.4em;
+    font-size: var(--t-sm);
+    color: var(--ink-faint);
+    max-width: 30ch;
+    text-wrap: pretty;
+  }
+</style>
