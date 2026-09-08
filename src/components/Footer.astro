@@ -51,6 +51,8 @@ const links = [
         </p>
       </div>
     </div>
+
+    <p class="legal reveal">{t.legal}</p>
   </div>
 </footer>
 
@@ -85,6 +87,18 @@ const links = [
 
   .tg:hover {
     border-color: var(--accent);
+  }
+
+  /* The signature line. Separated by a rule so it reads as a footnote under
+     the page rather than as one more item in the contacts column. */
+  .legal {
+    margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: var(--t-xs);
+    letter-spacing: 0.02em;
+    color: var(--ink-faint);
   }
 
   .links {

@@ -10,6 +10,9 @@ export interface UI {
   languages: string;
   availability: string;
   contacts: string;
+  /** The full legal name in the footer. Kept as interface rather than as CV
+   *  content: it is a signature under the page, not a fact about the career. */
+  legal: string;
   switchTo: string;
   skip: string;
   portraitAlt: string;
@@ -26,6 +29,11 @@ export const ui: Record<Locale, UI> = {
     languages: 'Языки',
     availability: 'Формат работы',
     contacts: 'Контакты',
+    /* With the patronymic, and in visible text rather than in JSON-LD alone:
+       HR and security screening search exactly this string when they have the
+       CV in hand. The quietest register on the page — a signature, not a
+       heading. The Latin page carries the same name in alternateName. */
+    legal: 'Кустов Алексей Игоревич',
     switchTo: 'English',
     skip: 'К содержанию',
     portraitAlt: 'Алексей Кустов',
@@ -42,6 +50,7 @@ export const ui: Record<Locale, UI> = {
     languages: 'Languages',
     availability: 'Availability',
     contacts: 'Contact',
+    legal: 'Aleksey Kustov',
     switchTo: 'Русский',
     skip: 'Skip to content',
     portraitAlt: 'Aleksey Kustov',

@@ -89,6 +89,12 @@ export const identity = {
   alternateNames: [
     'Алексей Кустов',
     'Кустов Алексей',
+    /* The full name with a patronymic: how HR, security screening and anyone
+       holding the hh.ru CV searches for a person. The registry aggregators —
+       rusprofile, checko — hold that query for namesakes, so the point is not
+       to outrank them but to be the answer for «full name + product / Sber». */
+    'Кустов Алексей Игоревич',
+    'Алексей Игоревич Кустов',
     'Alexey Kustov',
     'Aleksei Kustov',
     'Alexei Kustov',
